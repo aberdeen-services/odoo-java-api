@@ -16,9 +16,11 @@
 
 package com.abercap.odoo;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import com.abercap.odoo.Field.FieldType;
 /***
  * Holds data returned from the Odoo server.
  * @author Pieter van der Merwe
+ * @author Kyle Anderson
  *
  */
 public class Row {
@@ -126,23 +129,23 @@ public class Row {
 			return null;
 		
 		if (value instanceof String && fieldType == Field.FieldType.DATE){
-			DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			try{
-				return dfm.parse(value.toString());
+				return LocalDate.parse(value.toString(), formatter);
 			}
-			catch(ParseException p){
+			catch(DateTimeParseException p){
 				return null;
 			}
 		}
 		
 		if (value instanceof String && fieldType == Field.FieldType.DATETIME){
-			DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			try{
-				return dfm.parse(value.toString());
-			}
-			catch(ParseException p){
-				return null;
-			}
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            try{
+                return LocalDateTime.parse(value.toString(), formatter);
+            }
+            catch(DateTimeParseException p){
+                return null;
+            }
 		}
 
 		return value;
